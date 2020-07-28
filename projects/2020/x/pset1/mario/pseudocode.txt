@@ -1,0 +1,5 @@
+ask user for number between 1 and 8, inclusive
+if not between 1 and 8, inclusive reprompt user for number
+else store number in variable "rows"
+iterate from 1 through rows
+    On iteration i, print i #s and then a new line

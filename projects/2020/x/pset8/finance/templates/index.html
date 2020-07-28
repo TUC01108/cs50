@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block main %}
+    <table>
+        <tr>
+            <th>Symbol</th>
+            <th>Name</th>
+            <th>Shares</th>
+            <th>Price</th>
+            <th>TOTAL</th>
+        </tr>
+    {% for stock in stocks %}
+        <tr>
+            <td> {{ stock.symbol }}</td>
+            <td> {{ stock.name }}</td>
+            <td> {{ stock.shares }}</td>
+            <td> {{ stock.price }}</td>
+            <td>${{ stock.total_val }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    <h4>Current cash: {{ cash }}</h4>
+    <h4>total value: {{ total_total }}</h4>
+{% endblock %}
