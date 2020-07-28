@@ -1,0 +1,2 @@
+ask user how much change is owed
+print minimum number of coins with which that change can be made
