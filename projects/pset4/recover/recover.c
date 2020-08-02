@@ -36,62 +36,43 @@ int main(int argc, char *argv[])
 
 void findLostJpegs(FILE *file)
 {
-    // New type to store bytes of data
-    typedef uint8_t BYTE;
-
     // Buffer array
-    BYTE buffer[BUFFERSIZE];
+    unsigned char buffer[BUFFERSIZE];
+
+    // File to write to
+    FILE *image;
+    char jpegname[8];
 
     // JPEG counter
     int cntr = 0;
 
-    // File to write to
-    FILE *image;
-    char filename[8];
 
     // Repeat until end of card
     // Read 512 bytes into a buffer
-    while (fread(&buffer, BUFFERSIZE, 1, file) == 1)
+    while (fread(buffer, BUFFERSIZE, 1, file) == 1)
     {
         // If start of new JPEG
         if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && (buffer[3] & 0xf0) == 0xe0)
         {
-
             // If not first JPEG
             if (cntr > 0)
             {
                 // Close current file
                 fclose(image);
 
-                // Name new file
-                sprintf(filename, "%03i.jpg", cntr);
-                cntr++;
-
-                // Open new file
-                image = fopen(filename, "w");
-
-                // Write to file
-                fwrite(&buffer, BUFFERSIZE, 1, image);
             }
-            // If first JPEG
-            if (cntr == 0)
-            {
-                // Name new file starting at 000.jpg
-                sprintf(filename, "%03i.jpg", cntr);
-                cntr++;
+            // Name new file
+            sprintf(jpegname, "%03i.jpg", cntr);
 
-                // Open new file
-                image = fopen(filename, "w");
+            // Open new file
+            image = fopen(jpegname, "w");
 
-                // Write to file
-                fwrite(&buffer, BUFFERSIZE, 1, image);
-            }
+            cntr++;
         }
-        // If already found JPEG
-        else if (cntr > 0)
+        if (cntr > 0)
         {
-            // Keep writing to file
-            fwrite(&buffer, BUFFERSIZE, 1, image);
+        // Write to file
+        fwrite(buffer, BUFFERSIZE, 1, image);
         }
     }
 
