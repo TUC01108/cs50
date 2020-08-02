@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <cs50.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 #define BUFFERSIZE 512
 
 bool isInputCorrect();
-void fixCorruptJPEG();
+void findLostJpegs();
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    fixCorruptJPEG(file);
+    findLostJpegs(file);
 
     // Close file
     fclose(file);
@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
 
 
-void fixCorruptJPEG(FILE *file)
+void findLostJpegs(FILE *file)
 {
     // New type to store bytes of data
     typedef uint8_t BYTE;
@@ -46,7 +46,7 @@ void fixCorruptJPEG(FILE *file)
     int cntr = 0;
 
     // File to write to
-    FILE *img;
+    FILE *image;
     char filename[8];
 
     // Repeat until end of card
@@ -61,17 +61,17 @@ void fixCorruptJPEG(FILE *file)
             if (cntr > 0)
             {
                 // Close current file
-                fclose(img);
+                fclose(image);
 
                 // Name new file
                 sprintf(filename, "%03i.jpg", cntr);
                 cntr++;
 
                 // Open new file
-                img = fopen(filename, "w");
+                image = fopen(filename, "w");
 
                 // Write to file
-                fwrite(&buffer, BUFFERSIZE, 1, img);
+                fwrite(&buffer, BUFFERSIZE, 1, image);
             }
             // If first JPEG
             if (cntr == 0)
@@ -81,22 +81,22 @@ void fixCorruptJPEG(FILE *file)
                 cntr++;
 
                 // Open new file
-                img = fopen(filename, "w");
+                image = fopen(filename, "w");
 
                 // Write to file
-                fwrite(&buffer, BUFFERSIZE, 1, img);
+                fwrite(&buffer, BUFFERSIZE, 1, image);
             }
         }
         // If already found JPEG
         else if (cntr > 0)
         {
             // Keep writing to file
-            fwrite(&buffer, BUFFERSIZE, 1, img);
+            fwrite(&buffer, BUFFERSIZE, 1, image);
         }
     }
 
     // Close file
-    fclose(img);
+    fclose(image);
 
 }
 
